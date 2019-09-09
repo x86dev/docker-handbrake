@@ -18,7 +18,7 @@ docker build --tag docker-handbrake:devel .
 Start with:
 
 `
-docker run -it --rm --name handbrake -v /server/incoming:/mnt/watch docker-handbrake:devel
+docker run -it --name handbrake -v /server/incoming:/mnt/watch docker-handbrake:devel
 `
 
 The above example starts a container which will watch the directory `/server/incoming` for new .avi / .mpg files and starts to convert those as soon as they appear. The converted files will have the suffix **_converted** on success.
