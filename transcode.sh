@@ -52,6 +52,8 @@ if [ $? -ne 0 ]; then
     # Keep the log file.
 else
     echo "[$(date)] Transcoding successful: $MY_FILENAME_SRC"
+    chmod --reference=${MY_FILENAME_SRC} ${MY_FILENAME_DST}
+    chown --reference=${MY_FILENAME_SRC} ${MY_FILENAME_DST}
     rm "$MY_FILENAME_LOG" # Remove the log file on success.
     if [ -n "$MY_DO_REPLACE" ]; then
         echo "[$(date)] Replacing $MY_FILENAME_SRC"
