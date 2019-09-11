@@ -2,6 +2,8 @@
 
 MY_PATH_WATCH=/mnt/watch
 
+echo "Path is: $MY_PATH_WATCH"
+
 echo "Running once ..."
 run-once ${MY_PATH_WATCH}
 
