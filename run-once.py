@@ -11,12 +11,10 @@ if len(sys.argv) >= 2:
 else:
     path = '.'
 
-print('Handling: %s' % path)
-
-pattern = "*.mp4"
+print('Handling path: %s' % path)
 
 for (dirpath, dirnames, filenames) in walk(path):
     for fname in filenames:
-        if fnmatch.fnmatch(fname, pattern):
+        fname.endswith(('.mp4', '.avi', '.mpg', '.wmv', '.mkv')):
             fname_abs = dirpath + '/' + fname
-            subprocess.call(['./transcode.sh', fname_abs])
+            subprocess.call(['transcode.sh', fname_abs])
