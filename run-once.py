@@ -15,6 +15,6 @@ print('Handling path: %s' % path)
 
 for (dirpath, dirnames, filenames) in walk(path):
     for fname in filenames:
-        fname.endswith(('.mp4', '.avi', '.mpg', '.wmv', '.mkv')):
+        if fname.lower().endswith(('.mp4', '.avi', '.mpg', '.wmv', '.mkv')):
             fname_abs = dirpath + '/' + fname
             subprocess.call(['transcode.sh', fname_abs])
