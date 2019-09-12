@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
 from os import walk
@@ -6,7 +6,7 @@ import fnmatch
 import sys
 import subprocess
 
-if len(sys.argv):
+if len(sys.argv) >= 2:
     path = sys.argv[1]
 else:
     path = '.'
@@ -20,4 +20,3 @@ for (dirpath, dirnames, filenames) in walk(path):
         if fnmatch.fnmatch(fname, pattern):
             fname_abs = dirpath + '/' + fname
             subprocess.call(['./transcode.sh', fname_abs])
-            exit(0)
