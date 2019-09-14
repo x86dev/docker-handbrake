@@ -10,7 +10,7 @@ RUN apk add --no-cache python3 && \
 
 RUN mkdir -p /mnt/watch
 
-ADD transcode.sh watchdog.sh *.json run-once.py /usr/local/bin/
+ADD transcode.sh watchdog.sh *.json *.py /usr/local/bin/
 
 VOLUME /mnt/watch
 
