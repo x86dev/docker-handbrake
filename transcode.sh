@@ -53,8 +53,9 @@ if [ $? -ne 0 ]; then
     MY_ERROR=1
 else
     echo "[$(date)] Transcoding successful: $MY_FILENAME_SRC"
-    chmod --reference=${MY_FILENAME_SRC} ${MY_FILENAME_DST}
-    chown --reference=${MY_FILENAME_SRC} ${MY_FILENAME_DST}
+    echo "[$(date)] Cloning file attributes ..."
+    chown $(stat -c '%U.%G' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
+    chmod $(stat -c '%a' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
     MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
     MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
     echo "[$(date)] Duration source: $MY_DURATION_SRC seconds"
