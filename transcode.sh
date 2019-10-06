@@ -27,9 +27,9 @@ MY_FILENAME_DST=${MY_FILENAME_PATH}/${MY_FILENAME_NAME_NO_EXT}${MY_FILENAME_SUFF
 MY_FILENAME_DST_OLD_SCHEME=${MY_FILENAME_PATH}/${MY_FILENAME_PREFIX_TRANSCODED}${MY_FILENAME_NAME}
 MY_FILENAME_LOG=${MY_FILENAME_DST}.log
 
-MY_SRC_CODEC_TYPE=$(ffprobe -v error -hide_banner -of default=noprint_wrappers=1:nokey=1 -select_streams v:0 -show_entries stream=codec_name "$MY_FILENAME_SRC")
-
 MY_ERROR=
+
+MY_SRC_CODEC_TYPE=$(ffprobe -v error -hide_banner -of default=noprint_wrappers=1:nokey=1 -select_streams v:0 -show_entries stream=codec_name "$MY_FILENAME_SRC")
 
 if [ $? -ne 0 ]; then
     echo "[$(date)] Unable to determine codec type, skipping: $MY_FILENAME_SRC"
