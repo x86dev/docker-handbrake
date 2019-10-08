@@ -62,30 +62,27 @@ if [ $? -ne 0 ]; then
     MY_ERROR=1
 else
     echo "[$(date)] Transcoding successful: $MY_FILENAME_SRC"
-    echo "[$(date)] Moving temporary file '$MY_FILENAME_DST_TMP' to destination '$MY_FILENAME_DST' ..."
-    mv "$MY_FILENAME_DST_TMP" "$MY_FILENAME_DST"
-    if [ $? -ne 0 ]; then
-        echo "[$(date)] Error: Could not move file to '$MY_FILENAME_DST'"
-        MY_ERROR=1
-    else
-        echo "[$(date)] Cloning file attributes ..."
-        chown $(stat -c '%U.%G' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
-        chmod $(stat -c '%a' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
-        MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
-        MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
-        echo "[$(date)] Duration source: $MY_DURATION_SRC seconds"
-        echo "[$(date)] Duration destination: $MY_DURATION_DST seconds"
-        if [ "$MY_DURATION_SRC" = "$MY_DURATION_DST" ]; then
-            rm "$MY_FILENAME_LOG" # Remove the log file on success.
-            if [ -n "$MY_DO_REPLACE" ]; then
-                echo "[$(date)] Replacing $MY_FILENAME_SRC"
-                mv "$MY_FILENAME_SRC" "${MY_FILENAME_PATH}/${MY_FILENAME_NAME_NO_EXT}${MY_FILENAME_SUFFIX_ORIGINAL}.${MY_FILENAME_EXT}" \
-                && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
+    echo "[$(date)] Cloning file attributes ..."
+    chown $(stat -c '%U.%G' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
+    chmod $(stat -c '%a' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
+    MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
+    MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
+    echo "[$(date)] Duration source: $MY_DURATION_SRC seconds"
+    echo "[$(date)] Duration destination: $MY_DURATION_DST seconds"
+    if [ "$MY_DURATION_SRC" = "$MY_DURATION_DST" ]; then
+        rm "$MY_FILENAME_LOG" # Remove the log file on success.
+        if [ -n "$MY_DO_REPLACE" ]; then
+            echo "[$(date)] Replacing $MY_FILENAME_SRC"
+               mv "$MY_FILENAME_SRC" "${MY_FILENAME_PATH}/${MY_FILENAME_NAME_NO_EXT}${MY_FILENAME_SUFFIX_ORIGINAL}.${MY_FILENAME_EXT}" \
+            && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
+            if [ $? -ne 0 ]; then
+                echo "[$(date)] Error: Replacing file failed: $MY_FILENAME_SRC"
+                MY_ERROR=1
             fi
-        else
-            echo "[$(date)] Error: Durations do not match"
-            MY_ERROR=1
         fi
+    else
+        echo "[$(date)] Error: Durations do not match"
+        MY_ERROR=1
     fi
 fi
 
