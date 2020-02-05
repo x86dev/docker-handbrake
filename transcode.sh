@@ -68,8 +68,8 @@ if [ $? -ne 0 ]; then
 else
     log "Transcoding successful: $MY_FILENAME_SRC"
     log "Cloning file attributes ..."
-    chown $(stat -c '%U.%G' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
-    chmod $(stat -c '%a' ${MY_FILENAME_SRC}) ${MY_FILENAME_DST}
+    chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
+    chmod $(stat -c '%a' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
     MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
     MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
     log "Duration source: $MY_DURATION_SRC seconds"
@@ -78,7 +78,7 @@ else
         rm "$MY_FILENAME_LOG" # Remove the log file on success.
         if [ -n "$MY_DO_REPLACE" ]; then
             log "Replacing $MY_FILENAME_SRC"
-               mv "$MY_FILENAME_SRC" "${MY_FILENAME_PATH}/${MY_FILENAME_NAME_NO_EXT}${MY_FILENAME_SUFFIX_ORIGINAL}.${MY_FILENAME_EXT}" \
+               mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
             && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
             if [ $? -ne 0 ]; then
                 log "Error: Replacing file failed: $MY_FILENAME_SRC"
@@ -96,5 +96,5 @@ if [ -n "$MY_ERROR" ]; then
     rm "$MY_FILENAME_DST_TMP" > /dev/null 2>&1 # Delete partially encoded file again.
     # Keep the log file, but apply the file's access rights to it,
     # so that the user can delete it with the same rights later.
-    chown $(stat -c '%U.%G' ${MY_FILENAME_SRC}) ${MY_FILENAME_LOG}
+    chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_LOG"
 fi
