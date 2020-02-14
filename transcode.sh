@@ -67,26 +67,33 @@ if [ $? -ne 0 ]; then
     MY_ERROR=1
 else
     log "Transcoding successful: $MY_FILENAME_SRC"
-    log "Cloning file attributes ..."
-    chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
-    chmod $(stat -c '%a' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
-    MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
-    MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
-    log "Duration source: $MY_DURATION_SRC seconds"
-    log "Duration destination: $MY_DURATION_DST seconds"
-    if [ "$MY_DURATION_SRC" = "$MY_DURATION_DST" ]; then
-        if [ -n "$MY_DO_REPLACE" ]; then
-            log "Replacing $MY_FILENAME_SRC"
-               mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
-            && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
-            if [ $? -ne 0 ]; then
-                log "Error: Replacing file failed: $MY_FILENAME_SRC"
-                MY_ERROR=1
-            fi
-        fi
-    else
-        log "Error: Durations do not match"
+    log "Moving temp file '$MY_FILENAME_DST_TMP' to '$MY_FILENAME_DST' ..."
+    mv "$MY_FILENAME_DST_TMP" "$MY_FILENAME_DST" > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        log "Error: Moving temp file '$MY_FILENAME_DST_TMP' to '$MY_FILENAME_DST' failed"
         MY_ERROR=1
+    else
+        log "Cloning file attributes ..."
+        chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
+        chmod $(stat -c '%a' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
+        MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
+        MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
+        log "Duration source: $MY_DURATION_SRC seconds"
+        log "Duration destination: $MY_DURATION_DST seconds"
+        if [ "$MY_DURATION_SRC" = "$MY_DURATION_DST" ]; then
+            if [ -n "$MY_DO_REPLACE" ]; then
+                log "Replacing $MY_FILENAME_SRC"
+                mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
+                && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
+                if [ $? -ne 0 ]; then
+                    log "Error: Replacing file failed: $MY_FILENAME_SRC"
+                    MY_ERROR=1
+                fi
+            fi
+        else
+            log "Error: Durations do not match"
+            MY_ERROR=1
+        fi
     fi
 fi
 
