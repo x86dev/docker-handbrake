@@ -30,7 +30,7 @@ MY_FILENAME_LOG=${MY_FILENAME_DST}.log
 
 log()
 {
-    echo "[$(date)] $1" | tee "$MY_FILENAME_LOG" > /dev/null 2>&1
+    echo "[$(date)] $1" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
 }
 
 log "Handling '$MY_FILENAME'"
