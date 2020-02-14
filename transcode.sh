@@ -75,7 +75,6 @@ else
     log "Duration source: $MY_DURATION_SRC seconds"
     log "Duration destination: $MY_DURATION_DST seconds"
     if [ "$MY_DURATION_SRC" = "$MY_DURATION_DST" ]; then
-        rm "$MY_FILENAME_LOG" # Remove the log file on success.
         if [ -n "$MY_DO_REPLACE" ]; then
             log "Replacing $MY_FILENAME_SRC"
                mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
@@ -93,8 +92,12 @@ fi
 
 if [ -n "$MY_ERROR" ]; then
     log "An error ocurred -- see '$MY_FILENAME_LOG'"
-    rm "$MY_FILENAME_DST_TMP" > /dev/null 2>&1 # Delete partially encoded file again.
     # Keep the log file, but apply the file's access rights to it,
     # so that the user can delete it with the same rights later.
     chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_LOG"
+    # Delete partially encoded file again.
+    rm "$MY_FILENAME_DST_TMP" > /dev/null 2>&1
+else
+    # Remove the log file on success.
+    rm "$MY_FILENAME_LOG"
 fi
