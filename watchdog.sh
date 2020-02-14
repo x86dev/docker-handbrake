@@ -5,7 +5,7 @@ MY_PATH_WATCH=/mnt/watch
 echo "Path is: $MY_PATH_WATCH"
 
 echo "Running once ..."
-handbrake_transcode_dir.py ${MY_PATH_WATCH}
+handbrake_transcode_dir.py "$MY_PATH_WATCH"
 
 MY_PATTERN_INCLUDE="*.mp4;*.avi"
 MY_PATTERN_IGNORE="*_transcoded*;*_original*;*.part"
