@@ -74,13 +74,15 @@ else
         MY_ERROR=1
     else
         log "Cloning file attributes ..."
-        chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
-        chmod $(stat -c '%a' "$MY_FILENAME_SRC") "$MY_FILENAME_DST"
+        chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_DST" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
+        chmod $(stat -c '%a' "$MY_FILENAME_SRC") "$MY_FILENAME_DST" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
         MY_DURATION_SRC=$(ffprobe -i "$MY_FILENAME_SRC" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
         MY_DURATION_DST=$(ffprobe -i "$MY_FILENAME_DST" -show_format -v quiet | sed -n 's/duration=//p'| xargs printf %.0f)
         log "Duration source: $MY_DURATION_SRC seconds"
         log "Duration destination: $MY_DURATION_DST seconds"
-        if [ "$MY_DURATION_SRC" = "$MY_DURATION_DST" ]; then
+        # Do a rough approximation here by comparing the destination duration to the source duration
+        # and see if the durations are more or less equal (>= 90%); good enough for now.
+        if [[ $(($MY_DURATION_DST * 9/10)) -lt $MY_DURATION_SRC ]]; then
             if [ -n "$MY_DO_REPLACE" ]; then
                 log "Replacing $MY_FILENAME_SRC"
                 mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
@@ -91,7 +93,7 @@ else
                 fi
             fi
         else
-            log "Error: Durations do not match"
+            log "Error: Destination duration is less than 90% of the source duration"
             MY_ERROR=1
         fi
     fi
@@ -102,7 +104,8 @@ if [ -n "$MY_ERROR" ]; then
     # Keep the log file, but apply the file's access rights to it,
     # so that the user can delete it with the same rights later.
     chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_LOG"
-    # Delete partially encoded file again.
+    # Delete partially encoded files again.
+    rm "$MY_FILENAME_DST" > /dev/null 2>&1
     rm "$MY_FILENAME_DST_TMP" > /dev/null 2>&1
 else
     # Remove the log file on success.
