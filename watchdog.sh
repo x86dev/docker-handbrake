@@ -12,8 +12,8 @@ echo "Ignore pattern: $MY_PATTERN_IGNORE"
 echo "Running once ..."
 handbrake_transcode_dir.py "$MY_PATH_WATCH"
 
-# Raise inode limt. Needs root.
-sysctl fs.inotify.max_user_watches=65536
+# Raise ulimit to not run (too fast) into errors.
+ulimit -n 8096
 
 echo "Watchdog running ..."
 
