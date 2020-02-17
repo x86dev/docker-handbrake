@@ -12,14 +12,16 @@ echo "Ignore pattern: $MY_PATTERN_IGNORE"
 echo "Running once ..."
 handbrake_transcode_dir.py "$MY_PATH_WATCH"
 
-# Raise ulimit to not run (too fast) into errors.
-ulimit -n 8096
+# Note! The inotify limit eventually needs to be tweaked on the host (not possible in a container)
+#       for not running into inotify limits (as root), e.g. via
+# 
+#        echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
 
 echo "Watchdog running ..."
 
 watchmedo shell-command --patterns="$MY_PATTERN_INCLUDE" --ignore-pattern="$MY_PATTERN_IGNORE" --recursive --wait --command='transcode.sh "${watch_src_path}"' ${MY_PATH_WATCH}
 
-echo "Watchdog terminated"
+echo "Watchdog terminated, waiting ..."
 
 # Don't restart too fast in case that the watchdog crashed.
 sleep 30
