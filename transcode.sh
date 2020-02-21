@@ -72,8 +72,8 @@ fi
 
 MY_SRC_CODEC_TYPE=$(ffprobe -v error -hide_banner -of default=noprint_wrappers=1:nokey=1 -select_streams v:0 -show_entries stream=codec_name "$MY_FILENAME_SRC")
 if [ $? -ne 0 ]; then
-    error "Unable to determine codec type, skipping: $MY_FILENAME_SRC"
-    exit 1
+    log "Unable to determine codec type, skipping: $MY_FILENAME_SRC"
+    exit 0
 fi
 if [ "$MY_SRC_CODEC_TYPE" == "hevc" ]; then
     log "Already transcoded, skipping: $MY_FILENAME_SRC"
