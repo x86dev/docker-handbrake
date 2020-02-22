@@ -49,7 +49,7 @@ cleanup()
 }
 
 # Install signal handling.
-trap cleanup INT TERM
+trap cleanup EXIT INT TERM
 
 log()
 {
@@ -121,5 +121,3 @@ else
         fi
     fi
 fi
-
-cleanup
