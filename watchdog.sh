@@ -1,6 +1,9 @@
 #!/bin/sh
 
-MY_PATH_WATCH=/mnt/watch
+# If MY_PATH_WATCH is not set, use /var/www/html/data as default.
+if [ -z "$MY_PATH_WATCH" ]; then
+    MY_PATH_WATCH=/var/www/html/data
+fi
 
 MY_PATTERN_INCLUDE="*.mp4;*.avi"
 MY_PATTERN_IGNORE="*_transcoded*;*_original*;*.part"
