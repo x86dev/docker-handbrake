@@ -6,7 +6,7 @@ RUN apk update && \
     apk add --no-cache ffmpeg
 
 RUN apk add --no-cache python3 py3-pip && \
-    pip3 install --no-cache --upgrade pip watchdog
+    pip3 install --no-cache --upgrade pip watchdog watchdog[watchmedo]
 
 # Clean up.
 RUN set -xe && apk del --progress --purge && rm -rf /var/cache/apk/*
