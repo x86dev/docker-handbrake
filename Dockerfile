@@ -8,6 +8,9 @@ RUN apk update && \
 RUN apk add --no-cache python3 py3-pip && \
     pip3 install --no-cache --upgrade pip watchdog
 
+# Clean up.
+RUN set -xe && apk del --progress --purge && rm -rf /var/cache/apk/*
+
 RUN mkdir -p /mnt/watch
 
 ADD transcode.sh watchdog.sh *.json *.py /usr/local/bin/
