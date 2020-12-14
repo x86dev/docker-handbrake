@@ -30,7 +30,7 @@ MY_FILENAME_LOG=${MY_FILENAME_DST}.log
 
 MY_ERROR=
 
-cleanup() 
+cleanup()
 {
     echo "Cleaning up ..."
 
@@ -75,7 +75,7 @@ if [ $? -ne 0 ]; then
     log "Unable to determine codec type, skipping: $MY_FILENAME_SRC"
     exit 0
 fi
-if [ "$MY_SRC_CODEC_TYPE" == "hevc" ]; then
+if [ "$MY_SRC_CODEC_TYPE" = "hevc" ]; then
     log "Already transcoded, skipping: $MY_FILENAME_SRC"
     exit 0
 fi
@@ -113,7 +113,7 @@ else
                 mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
                 && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
                 if [ $? -ne 0 ]; then
-                    error "Replacing file failed: $MY_FILENAME_SRC"                    
+                    error "Replacing file failed: $MY_FILENAME_SRC"
                 fi
             fi
         else
