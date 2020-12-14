@@ -53,12 +53,12 @@ trap cleanup EXIT INT TERM
 
 log()
 {
-    echo "[$(date)] $1" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
+    echo "[$(date)] $1" | tee -a "$MY_FILENAME_LOG"
 }
 
 error()
 {
-    echo "[$(date)] ERROR: $1" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
+    echo "[$(date)] ERROR: $1" | tee -a "$MY_FILENAME_LOG"
     MY_ERROR=1
 }
 
