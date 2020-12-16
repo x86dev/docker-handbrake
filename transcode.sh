@@ -90,17 +90,21 @@ if [ -f "$MY_FILENAME_DST_OLD_SCHEME" ]; then
     log "Destination file (old scheme) already exists, skipping: $MY_FILENAME_SRC"
     exit 0
 fi
-log "Transcoding started: $MY_FILENAME_SRC ($MY_SRC_CODEC_TYPE) -> $MY_FILENAME_DST_TMP"
+log "Source file: $MY_FILENAME_SRC ($MY_SRC_CODEC_TYPE)"
+log "Temporary file: $MY_FILENAME_DST_TMP"
+log "Transcoding started"
 HandBrakeCLI --preset-import-file "$MY_PROFILE_FILE" -i "$MY_FILENAME_SRC" -o "$MY_FILENAME_DST_TMP" --preset="$MY_PROFILE_NAME" 2>&1 | tee -a "$MY_FILENAME_LOG"
 if [ $? -ne 0 ]; then
-    error "Could not transcode file: $MY_FILENAME_SRC"
+    error "Unable transcoding file: $MY_FILENAME_SRC"
 else
     log "Transcoding successful: $MY_FILENAME_SRC"
     log "Moving temp file '$MY_FILENAME_DST_TMP' to '$MY_FILENAME_DST' ..."
     mv "$MY_FILENAME_DST_TMP" "$MY_FILENAME_DST" > /dev/null 2>&1
     if [ $? -ne 0 ]; then
-        error "Moving temp file '$MY_FILENAME_DST_TMP' to '$MY_FILENAME_DST' failed"
+        error "Renaming temporary file '$MY_FILENAME_DST_TMP' to '$MY_FILENAME_DST' failed"
     else
+        MY_DST_CODEC_TYPE=$(ffprobe -v error -hide_banner -of default=noprint_wrappers=1:nokey=1 -select_streams v:0 -show_entries stream=codec_name "$MY_FILENAME_DST")
+        log "Destination file: $MY_FILENAME_DST ($MY_DST_CODEC_TYPE)"
         log "Cloning file attributes ..."
         chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_DST" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
         chmod $(stat -c '%a' "$MY_FILENAME_SRC") "$MY_FILENAME_DST" | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
