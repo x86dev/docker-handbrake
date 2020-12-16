@@ -39,8 +39,11 @@ cleanup()
         # Apply the source file's access rights to the log file,
         # so that the user can delete it with the same rights later.
         chown $(stat -c '%U.%G' "$MY_FILENAME_SRC") "$MY_FILENAME_LOG"
+        echo "Removing partially encoded / temporary files again ..."
         # Delete partially encoded files again.
+        echo "Removing: $MY_FILENAME_DST"
         rm "$MY_FILENAME_DST" > /dev/null 2>&1
+        echo "Removing: $MY_FILENAME_DST_TMP"
         rm "$MY_FILENAME_DST_TMP" > /dev/null 2>&1
     else
         # Remove the log file on success.
@@ -107,17 +110,18 @@ else
         log "Duration destination: $MY_DURATION_DST seconds"
         # Do a rough approximation here by comparing the destination duration to the source duration
         # and see if the durations are more or less equal (>= 90%); good enough for now.
-        if [[ $(($MY_DURATION_DST * 9/10)) -lt $MY_DURATION_SRC ]]; then
-            if [ -n "$MY_DO_REPLACE" ]; then
-                log "Replacing $MY_FILENAME_SRC"
-                mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
-                && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
-                if [ $? -ne 0 ]; then
-                    error "Replacing file failed: $MY_FILENAME_SRC"
-                fi
+        #if [[ $(($MY_DURATION_DST * 9/10)) -lt $MY_DURATION_SRC ]]; then
+        #else
+        #    error "Destination duration is less than 90% of the source duration"
+        #    MY_DO_REPLACE=
+        #fi
+        if [ -n "$MY_DO_REPLACE" ]; then
+            log "Replacing $MY_FILENAME_SRC"
+               mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
+            && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
+            if [ $? -ne 0 ]; then
+                error "Replacing file failed: $MY_FILENAME_SRC"
             fi
-        else
-            error "Destination duration is less than 90% of the source duration"
         fi
     fi
 fi
