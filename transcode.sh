@@ -120,11 +120,13 @@ else
         #    MY_DO_REPLACE=
         #fi
         if [ -n "$MY_DO_REPLACE" ]; then
-            log "Replacing $MY_FILENAME_SRC"
-               mv "$MY_FILENAME_SRC" "$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT" \
+            MY_FILENAME_SRC_BACKUP="$MY_FILENAME_PATH/$MY_FILENAME_NAME_NO_EXT$MY_FILENAME_SUFFIX_ORIGINAL.$MY_FILENAME_EXT"
+            log "Replacing source file '$MY_FILENAME_SRC' to '$MY_FILENAME_SRC_BACKUP'"
+            log "Replacing destination file '$MY_FILENAME_DST' to '$MY_FILENAME_SRC'"
+               mv "$MY_FILENAME_SRC" "$MY_FILENAME_SRC_BACKUP" \
             && mv "$MY_FILENAME_DST" "$MY_FILENAME_SRC"
             if [ $? -ne 0 ]; then
-                error "Replacing file failed: $MY_FILENAME_SRC"
+                error "Replacing files failed"
             fi
         fi
     fi
