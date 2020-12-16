@@ -91,7 +91,7 @@ if [ -f "$MY_FILENAME_DST_OLD_SCHEME" ]; then
     exit 0
 fi
 log "Transcoding started: $MY_FILENAME_SRC ($MY_SRC_CODEC_TYPE) -> $MY_FILENAME_DST_TMP"
-HandBrakeCLI --preset-import-file "$MY_PROFILE_FILE" -i "$MY_FILENAME_SRC" -o "$MY_FILENAME_DST_TMP" --preset="$MY_PROFILE_NAME" 2>&1 | tee -a "$MY_FILENAME_LOG" > /dev/null 2>&1
+HandBrakeCLI --preset-import-file "$MY_PROFILE_FILE" -i "$MY_FILENAME_SRC" -o "$MY_FILENAME_DST_TMP" --preset="$MY_PROFILE_NAME" 2>&1 | tee -a "$MY_FILENAME_LOG"
 if [ $? -ne 0 ]; then
     error "Could not transcode file: $MY_FILENAME_SRC"
 else
