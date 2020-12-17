@@ -3,7 +3,7 @@ FROM ubuntu:focal
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg handbrake-cli python3 python3-pip
 
-RUN pip3 install --no-cache --upgrade pip watchdog watchdog[watchmedo]
+RUN pip3 install --no-cache --upgrade pip pyyaml argh watchdog watchdog[watchmedo]
 
 # Clean up.
 RUN rm -rf /var/lib/apt/lists/*
